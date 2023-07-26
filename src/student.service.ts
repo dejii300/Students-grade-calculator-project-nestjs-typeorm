@@ -151,8 +151,12 @@ async getStatisticalInformation(): Promise<{
     }
 
     async update(id: number, updateStudentDto: UpdateStudentDto) {
+      const student = await this.studentRepository.findOne({where:{id}});
     
-      const student = await this.studentRepository.findOneBy({id});
+      if (!student) {
+        throw new Error('Student not found.');
+      }
+    
       
       student.mathematics = updateStudentDto.mathematics;
       student.englishLanguage = updateStudentDto.englishLanguage;
@@ -162,18 +166,43 @@ async getStatisticalInformation(): Promise<{
       student.french = updateStudentDto.french;
       student.technicalDrawing = updateStudentDto.technicalDrawing;
       student.workshop = updateStudentDto.workshop;
-      
-      
-      
-      
-      
-      
-      return this.studentRepository.save(student);
-      
+    
+      const totalGradePoints =
+        this.getSubjectGrade(updateStudentDto.mathematics) * 4 +
+        this.getSubjectGrade(updateStudentDto.englishLanguage) * 2 +
+        this.getSubjectGrade(updateStudentDto.biology) * 3 +
+        this.getSubjectGrade(updateStudentDto.chemistry) * 4 +
+        this.getSubjectGrade(updateStudentDto.physics) * 4 +
+        this.getSubjectGrade(updateStudentDto.french) * 1 +
+        this.getSubjectGrade(updateStudentDto.technicalDrawing) * 1 +
+        this.getSubjectGrade(updateStudentDto.workshop) * 1;
+    
+      const totalUnits = 4 + 2 + 3 + 4 + 4 + 1 + 1 + 1; // Total units of all subjects
+    
+      student.gpa = totalUnits !== 0 ? totalGradePoints / totalUnits : 0;
+    
+      await this.studentRepository.save(student);
+      return student;
     }
+    
+    private getSubjectGrade(grade: string): number {
+      const gradeMap = {
+        A: 5,
+        B: 4,
+        C: 3,
+        D: 2,
+        E: 1,
+        F: 0,
+      };
+    
+      return gradeMap[grade] || 0;
+    }
+      
+      
+  
     
     async remove(id: number) {
         await this.studentRepository.delete(id)
     }
 
-}
+  }

@@ -52,7 +52,6 @@ constructor(private readonly studentService: StudentService) {}
     @ApiOperation({ summary: 'Update each student data by id' })
     @ApiResponse({ status: 200, description: 'Student data updated successfully' })
     @Put(':id')
-  
     async update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
     return this.studentService.update(+id, updateStudentDto);
 }
