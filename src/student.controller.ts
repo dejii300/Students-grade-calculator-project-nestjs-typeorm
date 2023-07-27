@@ -15,7 +15,7 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 
 import { StatisticDto } from './dto/createStatistic.dto';
 import { CreateStudentDto } from './dto/createStudent.dto';
-import { Query } from 'typeorm/driver/Query';
+
 
 @ApiTags('Student')
 @Controller('students')

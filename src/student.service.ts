@@ -4,6 +4,7 @@ import { Repository, getRepository } from 'typeorm';
 import { Student } from './student.entity';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { StatisticDto } from './dto/createStatistic.dto';
+import { CreateStudentDto } from './dto/createStudent.dto';
 
 @Injectable()
 export class StudentService {
@@ -12,13 +13,13 @@ export class StudentService {
     private readonly studentRepository: Repository<Student>,
   ) {}
 
-  async saveStudentData(studentData: Partial<Student>): Promise<Student> {
+  async saveStudentData(studentData: CreateStudentDto): Promise<Student> {
     const student = this.studentRepository.create(studentData);
     student.gpa = await this.calculateGPA(student);
     return this.studentRepository.save(student);
   }
 
-  async calculateGPA(student: Student): Promise<number> {
+  async calculateGPA(student: CreateStudentDto): Promise<number> {
     const gradePoints = {
       A: 5,
       B: 4,
