@@ -2,7 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository } from 'typeorm';
 import { Student } from './student.entity';
-import { UpdateStudentDto } from './update-student.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
+import { StatisticDto } from './dto/createStatistic.dto';
 
 @Injectable()
 export class StudentService {
@@ -66,10 +67,7 @@ export class StudentService {
     return gpa;
   }
 
-  async getStatisticalInformation(): Promise<{
-    mostFailedSubjects: string[];
-    mostAcedSubjects: string[];
-  }> {
+  async getStatisticalInformation(): Promise<StatisticDto> {
     const allStudents = await this.studentRepository.find();
 
     let mostFailedSubjects: string[] = [];
@@ -140,7 +138,11 @@ export class StudentService {
   }
 
   async findAll() {
-    return this.studentRepository.find();
+    const empty = this.studentRepository.find();
+    if (empty) {
+      return empty;
+    }
+    throw new NotFoundException('Nothing is found');
   }
 
   async findOne(id: number) {
@@ -199,6 +201,10 @@ export class StudentService {
   }
 
   async remove(id: number) {
-    await this.studentRepository.delete(id);
+    const found = await this.studentRepository.delete(id);
+    if (found) {
+      return found;
+    }
+    throw new NotFoundException('The id you provided does not exist');
   }
 }

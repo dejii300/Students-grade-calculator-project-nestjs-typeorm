@@ -6,12 +6,16 @@ import {
   Param,
   Post,
   Put,
+
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Student } from './student.entity';
 import { StudentService } from './student.service';
-import { UpdateStudentDto } from './update-student.dto';
-import { CreateStudentDto } from './dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
+
+import { StatisticDto } from './dto/createStatistic.dto';
+import { CreateStudentDto } from './dto/createStudent.dto';
+import { Query } from 'typeorm/driver/Query';
 
 @ApiTags('Student')
 @Controller('students')
@@ -52,17 +56,13 @@ export class StudentController {
   }
 
   @ApiOperation({ summary: 'Get statistical information' })
-  @ApiResponse({
-    status: 200,
-    description: 'Statistical information retrieved successfully',
-  })
-  @Get('stats')
-  async getStatisticalInformation(): Promise<{
-    mostFailedSubjects: string[];
-    mostAcedSubjects: string[];
-  }> {
-    return await this.studentService.getStatisticalInformation();
+    @ApiResponse({ status: 200, description: 'Statistical information retrieved successfully' })
+    
+    @Get('stat')
+  async getStatisticalInformation(): Promise<StatisticDto> {
+    return this.studentService.getStatisticalInformation();
   }
+
 
   @ApiOperation({ summary: 'Remove each student data from the database' })
   @ApiResponse({ status: 20, description: 'data removed successfully' })
