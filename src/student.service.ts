@@ -158,31 +158,26 @@ export class StudentService {
       throw new Error('Student not found.');
     }
 
-    student.mathematics = updateStudentDto.mathematics;
-    student.englishLanguage = updateStudentDto.englishLanguage;
-    student.biology = updateStudentDto.biology;
-    student.chemistry = updateStudentDto.chemistry;
-    student.physics = updateStudentDto.physics;
-    student.french = updateStudentDto.french;
-    student.technicalDrawing = updateStudentDto.technicalDrawing;
-    student.workshop = updateStudentDto.workshop;
+    console.log(updateStudentDto);
+    const metaStudent = { ...student, ...updateStudentDto };
+    console.log(metaStudent);
 
     const totalGradePoints =
-      this.getSubjectGrade(updateStudentDto.mathematics) * 4 +
-      this.getSubjectGrade(updateStudentDto.englishLanguage) * 2 +
-      this.getSubjectGrade(updateStudentDto.biology) * 3 +
-      this.getSubjectGrade(updateStudentDto.chemistry) * 4 +
-      this.getSubjectGrade(updateStudentDto.physics) * 4 +
-      this.getSubjectGrade(updateStudentDto.french) * 1 +
-      this.getSubjectGrade(updateStudentDto.technicalDrawing) * 1 +
-      this.getSubjectGrade(updateStudentDto.workshop) * 1;
+      this.getSubjectGrade(metaStudent.mathematics) * 4 +
+      this.getSubjectGrade(metaStudent.englishLanguage) * 2 +
+      this.getSubjectGrade(metaStudent.biology) * 3 +
+      this.getSubjectGrade(metaStudent.chemistry) * 4 +
+      this.getSubjectGrade(metaStudent.physics) * 4 +
+      this.getSubjectGrade(metaStudent.french) * 1 +
+      this.getSubjectGrade(metaStudent.technicalDrawing) * 1 +
+      this.getSubjectGrade(metaStudent.workshop) * 1;
 
     const totalUnits = 4 + 2 + 3 + 4 + 4 + 1 + 1 + 1; // Total units of all subjects
 
-    student.gpa = totalUnits !== 0 ? totalGradePoints / totalUnits : 0;
+    metaStudent.gpa = totalUnits !== 0 ? totalGradePoints / totalUnits : 0;
 
-    await this.studentRepository.save(student);
-    return student;
+    await this.studentRepository.save(metaStudent);
+    return metaStudent;
   }
 
   private getSubjectGrade(grade: string): number {
