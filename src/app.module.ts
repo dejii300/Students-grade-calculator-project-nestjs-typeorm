@@ -3,20 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Student } from './student.entity';
 import { StudentController } from './student.controller';
 import { StudentService } from './student.service';
+import { DatabaseModule } from './database/database.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'teacher080',
-      database: 'postgres',
-      entities: [Student],
-      synchronize: true,
-    }),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forFeature([Student]),
+    DatabaseModule,
   ],
   controllers: [StudentController],
   providers: [StudentService],
